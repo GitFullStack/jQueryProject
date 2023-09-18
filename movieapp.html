@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <link rel="stylesheet" href="https://unpkg.com/bootstrap/dist/css/bootstrap.css">
+  <style>
+    #movie-form {
+      margin: 0;
+      padding: 10px
+    }
+
+    .input-control {
+      padding: 10px 4px;
+      display: inline-block;
+    }
+
+    #title {
+      width: 300px
+    }
+
+    .movies {
+      padding: 10px;
+      width: 700px;
+      list-style: none;
+    }
+
+    .movies li {
+      margin: 2px 5px;
+    }
+
+    .movie {
+      width: 100%;
+      font-size: 22px;
+      color: blue;
+      padding: 5px;
+      font-weight: bold;
+      border: solid gray 1px;
+      background-color: rgb(199, 223, 244);
+    }
+
+    .li_title {
+      width: 65%;
+      display: inline-block;
+    }
+
+    .li_rating {
+      width: 15%;
+      display: inline-block;
+    }
+
+    .li_button {
+      margin-left: 20px;
+      width: 10%;
+      display: inline-block;
+    }
+
+    #sortbtns {
+      margin: 10px
+    }
+
+    #sortbtns button {
+      margin: 5px
+    }
+  </style>
+</head>
+
+<body>
+  <div id="movie-form">
+    <div class="input-control">
+      Title <br>
+      <input id="title" type="string">
+    </div>
+    <div class="input-control">
+      Rating <br>
+      <input id="rating" type="number" min="0" max="10">
+    </div>
+    <button id="submit">Submit</button>
+
+  </div>
+
+  <div id="sortbtns"><button id="sort-title">Title Sort</button><button id="sort-rating">Rating Sort</button></div>
+  <br>
+  <ul class="movies">
+  </ul>
+
+
+  <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+  <script>
+    $(document).ready(function () {
+
+      $('#submit').click(function () {
+        let title = $('#title').val().trim();
+        let rating = $('#rating').val();
+
+        if (title.includes('"')) {
+          title = title.replaceAll(/"/gi, '\\"');
+        }
+
+        if (title.includes("'")) {
+          title = title.replace(/'/gi, "\\'");
+        }
+
+        if (title.includes(' ')) {
+          title = title.replace(/\s+/g, '-');
+        }
+
+        let li = document.createElement("li");
+
+        $(li).addClass("movie");
+        $(li).attr("data-title", title);
+        $(li).attr("data-rating", rating);
+        li.innerHTML = "<div class='li_title' >Title: " + $('#title').val() + "</div><div class='li_rating' > Rating: " + $('#rating').val() + "</div><div class='li_button' ><button class='remove' >Remove</button></div>"
+        if ($('#title').val().length < 2) {
+          alert('Title must contain at least 2 characters!');
+          $('#title').val() = "";
+        } else if ($('#rating').val().length === 0) {
+          alert('Please select a rating.');
+        } else {
+          $(".movies").append(li);
+        }
+
+      })
+
+      $('.movies').on('click', '.remove', function (e) {
+        $(this).parent().parent().remove();
+      });
+
+      $('#sort-title').click(function () {
+        $(".movies li").sort(sort_li).appendTo('.movies');
+        function sort_li(a, b) {
+          return ($(b).data('title')) < ($(a).data('title')) ? 1 : -1;
+        }
+      });
+
+      $('#sort-rating').click(function () {
+        $(".movies li").sort(sort_li).appendTo('.movies');
+        function sort_li(a, b) {
+          return ($(b).data('rating')) < ($(a).data('rating')) ? 1 : -1;
+        }
+      });
+
+    });
+
+
+  </script>
+</body>
+
+</html>
